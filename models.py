@@ -6,24 +6,29 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
+    key = db.Column(db.Integer, unique=True)
 
     zones = db.relationship('Zone', backref='user')
     locations = db.relationship('Location', backref='user')
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id = id).first()
 
     def __repr__(self):
         return '<User %r>' % self.name
 
 class Zone(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True)
-    latitude = db.Column(db.String(48), unique=True)
-    longitude = db.Column(db.String(48), unique=True)
-    radius = db.Column(db.Integer, unique=True)
-    dateStart = db.Column(db.DateTime, unique=True)
-    dateEnd = db.Column(db.DateTime, unique=True)
-    timeStart = db.Column(TIME, unique=True)
-    timeEnd = db.Column(TIME, unique=True)
+    name = db.Column(db.String(255))
+    latitude = db.Column(db.String(48))
+    longitude = db.Column(db.String(48))
+    radius = db.Column(db.Integer)
+    dateStart = db.Column(db.DateTime)
+    dateEnd = db.Column(db.DateTime)
+    timeStart = db.Column(TIME)
+    timeEnd = db.Column(TIME)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
@@ -31,10 +36,14 @@ class Zone(db.Model):
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.String(48), unique=True)
-    longitude = db.Column(db.String(48), unique=True)
-    dateTime = db.Column(db.DateTime, unique=True)
+    latitude = db.Column(db.String(48))
+    longitude = db.Column(db.String(48))
+    dateTime = db.Column(db.DateTime)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return '<Location %r>' % self.id
@@ -47,7 +56,7 @@ admin_user = db.Table('admin_user',
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
 
     users = db.relationship('User', secondary=admin_user, backref='admin')
 

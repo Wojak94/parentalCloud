@@ -1,8 +1,10 @@
 from flask import Flask
-from models import db
+from flask_restful import Api
+from models import db, User
 import os
 
 app = Flask(__name__)
+api = Api(app)
 
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
@@ -14,6 +16,10 @@ db.init_app(app)
 @app.route('/')
 def index():
     return 'Hello World'
+
+import models, resources
+
+api.add_resource(resources.UserLocation, '/addLocation')
 
 if __name__ == "__main__":
     app.run()
