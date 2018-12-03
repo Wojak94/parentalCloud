@@ -19,7 +19,8 @@ def index():
 
 import models, resources
 
-api.add_resource(resources.UserLocation, '/addLocation')
+api.add_resource(resources.addUserLocation, '/addLocation')
+api.add_resource(resources.getUserLocation, '/getLocation')
 
 if __name__ == "__main__":
     app.run()

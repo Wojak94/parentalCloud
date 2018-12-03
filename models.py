@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import TIME
+from sqlalchemy import desc
 import datetime
 
 db = SQLAlchemy()
@@ -10,7 +11,7 @@ class User(db.Model):
     key = db.Column(db.Integer, unique=True)
 
     zones = db.relationship('Zone', backref='user')
-    locations = db.relationship('Location', backref='user')
+    locations = db.relationship('Location', backref='users')
 
     @classmethod
     def find_by_id(cls, id):
@@ -40,6 +41,11 @@ class Location(db.Model):
     longitude = db.Column(db.String(48))
     dateTime = db.Column(db.DateTime)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    @classmethod
+    def get_recent_location(cls, userId):
+        x = cls.query.filter_by(userId = userId).order_by(cls.dateTime.desc()).first()
+        return {'latitude': x.latitude, 'longitude': x.longitude, 'datetime': x.dateTime.__str__()}
 
     def save_to_db(self):
         db.session.add(self)

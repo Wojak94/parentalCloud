@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from models import User, Location
 
 
-class UserLocation(Resource):
+class addUserLocation(Resource):
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -10,7 +10,6 @@ class UserLocation(Resource):
         parser.add_argument('datetime', help = 'This field cannot be blank', required = True, location='headers')
         parser.add_argument('lat', help = 'This field cannot be blank', required = True, location='headers')
         parser.add_argument('lng', help = 'This field cannot be blank', required = True, location='headers')
-
         data = parser.parse_args()
 
         if not User.find_by_id(data['id']):
@@ -28,3 +27,15 @@ class UserLocation(Resource):
             return {'message': 'Location was saved!'}
         except:
             return {'message': 'Something went wrong {}'.format(data)}, 500
+
+class getUserLocation(Resource):
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', help = 'This field cannot be blank', required = True, location='headers')
+        data = parser.parse_args()
+
+        if not User.find_by_id(data['id']):
+            return {'message': 'User {} doesn\'t exists'.format(data['id'])}
+
+        return Location.get_recent_location(data['id'])
