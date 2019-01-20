@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import TIME
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 import datetime
 
 db = SQLAlchemy()
@@ -46,6 +46,20 @@ class Location(db.Model):
     def get_recent_location(cls, userId):
         x = cls.query.filter_by(userId = userId).order_by(cls.dateTime.desc()).first()
         return {'latitude': x.latitude, 'longitude': x.longitude, 'datetime': x.dateTime.__str__()}
+
+    @classmethod
+    def get_locations_by_date(cls, date, id):
+        locations = list(cls.query.filter(Location.userId == id).filter(func.DATE(Location.dateTime) == datetime.datetime.strptime(date, '%Y-%m-%d')))
+        return locations
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'dateTime': self.dateTime,
+        }
 
     def save_to_db(self):
         db.session.add(self)

@@ -52,3 +52,17 @@ class getAllUserZones(Resource):
             return {'message': 'User {} doesn\'t exists'.format(data['id'])}
 
         return jsonify(zones=[i.serialize for i in User.find_by_id(data['id']).zones])
+
+
+class getLocationByDate(Resource):
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', help = 'This field cannot be blank', required = True, location='headers')
+        parser.add_argument('date', help = 'This field cannot be blank', required = True, location='headers')
+        data = parser.parse_args()
+
+        if not User.find_by_id(data['id']):
+            return {'message': 'User {} doesn\'t exists'.format(data['id'])}
+
+        return jsonify(locations=[i.serialize for i in Location.get_locations_by_date(data['date'], data['id'])])
