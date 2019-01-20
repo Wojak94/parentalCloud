@@ -21,6 +21,7 @@ import models, resources
 
 api.add_resource(resources.addUserLocation, '/addLocation')
 api.add_resource(resources.getUserLocation, '/getLocation')
+api.add_resource(resources.getAllUserZones, '/getZones')
 
 if __name__ == "__main__":
     app.run()
