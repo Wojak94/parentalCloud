@@ -32,6 +32,10 @@ class Zone(db.Model):
     timeEnd = db.Column(TIME)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
     def __repr__(self):
         return '<Zone %r>' % self.name
 

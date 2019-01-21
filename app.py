@@ -23,6 +23,7 @@ api.add_resource(resources.addUserLocation, '/addLocation')
 api.add_resource(resources.getUserLocation, '/getLocation')
 api.add_resource(resources.getAllUserZones, '/getZones')
 api.add_resource(resources.getLocationByDate, '/getDateLocations')
+api.add_resource(resources.setZone, '/setZone')
 
 if __name__ == "__main__":
     app.run()
