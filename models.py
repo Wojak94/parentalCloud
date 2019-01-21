@@ -32,6 +32,16 @@ class Zone(db.Model):
     timeEnd = db.Column(TIME)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'radius': self.radius
+        }
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
